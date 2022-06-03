@@ -1,0 +1,58 @@
+{
+  "name": "superlist",
+  "version": "1.0.13",
+  "description": "A SuperList component for React Native with a RecyclerView style API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/discordapp/fast-list.git"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "react-native",
+    "fast",
+    "list",
+    "performance",
+    "perf",
+    "quick",
+    "scroll",
+    "scroller",
+    "view",
+    "component",
+    "ui",
+    "recycler",
+    "recyclerview",
+    "discord"
+  ],
+  "author": "Discord, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/discordapp/fast-list/issues"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "homepage": "https://github.com/discordapp/fast-list#readme",
+  "resolutions": {
+    "@types/react": "17.0.39",
+    "@types/react-native": "0.67.7",
+    "@types/lodash": "4.14.159"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-gesture-handler": "*",
+    "lodash": "*"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.159",
+    "@types/react": "^17.0.39",
+    "@types/react-native": "^0.67.7",
+    "react-native-gesture-handler": "2.4.2",
+    "typescript": "^4.6.2",
+    "react": "^17.0.2",
+    "react-native": "^0.68.2"
+  }
+}
