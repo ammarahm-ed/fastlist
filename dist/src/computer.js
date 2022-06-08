@@ -48,16 +48,20 @@ class FastListComputer {
             ? sectionFooterHeight
             : sectionFooterHeight(section);
     }
-    compute(top, bottom, prevItems, scrollDirection, batchSize) {
+    compute(top, bottom, prevItems, scrollDirection, batchSize, renderAheadMultiplier, renderBehindMultiplier) {
         const { sections } = this;
         let height = this.insetTop;
         let spacerHeight = height;
         let items = [];
+        // Render twice as much items in the direction we are scrolling
+        // to prevent blanks/flickering when scrolling fast.
         if (!scrollDirection) {
-            top = top - batchSize;
+            top = top - batchSize * renderAheadMultiplier;
+            bottom = bottom + batchSize * renderBehindMultiplier;
         }
         else {
-            bottom = bottom + batchSize;
+            top = top - batchSize * renderBehindMultiplier;
+            bottom = bottom + batchSize * renderAheadMultiplier;
         }
         const recycler = new recycler_1.FastListItemRecycler(prevItems);
         function isVisible(itemHeight) {
@@ -174,6 +178,7 @@ class FastListComputer {
         }
         mergeSections();
         recycler.fill();
+        console.log(items.length, "items in batch");
         return {
             height,
             items,

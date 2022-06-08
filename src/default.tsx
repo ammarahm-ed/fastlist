@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FastListComputer } from "./computer";
-import { FastListItemTypes } from "./constants";
+import { FastListItemTypes, ScrollDirection } from "./constants";
 import { FastListItemRenderer } from "./item";
 import { FastListSectionRenderer } from "./section";
 import { FastListItem, FastListProps, FastListState } from "./types";
@@ -119,8 +119,9 @@ export default class FastList extends React.PureComponent<
       nativeEvent.contentSize.height - this.containerHeight
     );
 
-    if (this.scrollTop < this.prevScrollValue) this.scrollDirection = 0;
-    else this.scrollDirection = 1;
+    if (this.scrollTop < this.prevScrollValue)
+      this.scrollDirection = ScrollDirection.UP;
+    else this.scrollDirection = ScrollDirection.DOWN;
 
     this.prevScrollValue = this.scrollTop;
     const nextState = computeBlock(
@@ -128,12 +129,14 @@ export default class FastList extends React.PureComponent<
       this.scrollTop,
       this.props.batchSize(this.containerHeight, event.nativeEvent.velocity)
     );
+    nextState.scrollDirection = this.scrollDirection;
+
     if (
       nextState.batchSize !== this.state.batchSize ||
       nextState.blockStart !== this.state.blockStart ||
-      nextState.blockEnd !== this.state.blockEnd
+      nextState.blockEnd !== this.state.blockEnd ||
+      nextState.scrollDirection !== this.state.scrollDirection
     ) {
-      nextState.scrollDirection = this.scrollDirection;
       this.setState(nextState);
     }
 

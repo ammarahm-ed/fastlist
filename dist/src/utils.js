@@ -17,7 +17,7 @@ function computeBlock(containerHeight, scrollTop, batchSize) {
     return { batchSize, blockStart, blockEnd, scrollDirection: 1 };
 }
 exports.computeBlock = computeBlock;
-function getFastListState({ headerHeight, footerHeight, sectionHeight, rowHeight, sectionFooterHeight, sections, insetTop, insetBottom, }, { batchSize, blockStart, blockEnd, scrollDirection, items: prevItems, }) {
+function getFastListState({ headerHeight, footerHeight, sectionHeight, rowHeight, sectionFooterHeight, sections, insetTop, insetBottom, renderAheadMultiplier = 2, renderBehindMultiplier = 1, }, { batchSize, blockStart, blockEnd, scrollDirection, items: prevItems, }) {
     if (batchSize === 0) {
         return {
             batchSize,
@@ -42,7 +42,10 @@ function getFastListState({ headerHeight, footerHeight, sectionHeight, rowHeight
         batchSize,
         blockStart,
         blockEnd,
-        ...computer.compute(blockStart - batchSize, blockEnd + batchSize, prevItems || [], scrollDirection, batchSize),
+        ...computer.compute(
+        // We know which direction the user is scrolling in so that
+        // We can render more items there instead and save memory/cpu.
+        blockStart, blockEnd, prevItems || [], scrollDirection, batchSize, renderAheadMultiplier, renderBehindMultiplier),
     };
 }
 exports.getFastListState = getFastListState;

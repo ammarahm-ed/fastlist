@@ -6,3 +6,8 @@ export const FastListItemTypes = {
   ROW: 4,
   SECTION_FOOTER: 5,
 };
+
+export enum ScrollDirection {
+  UP = 0,
+  DOWN = 1,
+}

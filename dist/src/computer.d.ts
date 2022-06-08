@@ -15,7 +15,7 @@ export declare class FastListComputer {
     getHeightForSection(section: number): number;
     getHeightForRow(section: number, row?: number): number;
     getHeightForSectionFooter(section: number): number;
-    compute(top: number, bottom: number, prevItems: Array<FastListItem>, scrollDirection: number, batchSize: number): {
+    compute(top: number, bottom: number, prevItems: Array<FastListItem>, scrollDirection: number, batchSize: number, renderAheadMultiplier: number, renderBehindMultiplier: number): {
         height: number;
         items: Array<FastListItem>;
     };

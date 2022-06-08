@@ -76,7 +76,9 @@ export class FastListComputer {
     bottom: number,
     prevItems: Array<FastListItem>,
     scrollDirection: number,
-    batchSize: number
+    batchSize: number,
+    renderAheadMultiplier: number,
+    renderBehindMultiplier: number
   ): {
     height: number;
     items: Array<FastListItem>;
@@ -85,10 +87,14 @@ export class FastListComputer {
     let height = this.insetTop;
     let spacerHeight = height;
     let items: Array<FastListItem> = [];
+    // Render twice as much items in the direction we are scrolling
+    // to prevent blanks/flickering when scrolling fast.
     if (!scrollDirection) {
-      top = top - batchSize;
+      top = top - batchSize * renderAheadMultiplier;
+      bottom = bottom + batchSize * renderBehindMultiplier;
     } else {
-      bottom = bottom + batchSize;
+      top = top - batchSize * renderBehindMultiplier;
+      bottom = bottom + batchSize * renderAheadMultiplier;
     }
 
     const recycler = new FastListItemRecycler(prevItems);
@@ -276,6 +282,8 @@ export class FastListComputer {
 
     mergeSections();
     recycler.fill();
+
+    console.log(items.length, "items in batch");
 
     return {
       height,

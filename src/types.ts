@@ -46,6 +46,8 @@ export type FastListState = {
 };
 
 export type FastListProps = {
+  renderAheadMultiplier: number;
+  renderBehindMultiplier: number;
   batchSize: (height: number, velocity?: { x: number; y: number }) => number;
   listKey?: string;
   isFastList?: boolean;

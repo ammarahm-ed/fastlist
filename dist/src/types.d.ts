@@ -34,6 +34,8 @@ export declare type FastListState = {
     scrollDirection?: number;
 };
 export declare type FastListProps = {
+    renderAheadMultiplier: number;
+    renderBehindMultiplier: number;
     batchSize: (height: number, velocity?: {
         x: number;
         y: number;

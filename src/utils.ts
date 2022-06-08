@@ -30,6 +30,8 @@ export function getFastListState(
     sections,
     insetTop,
     insetBottom,
+    renderAheadMultiplier = 2,
+    renderBehindMultiplier = 1,
   }: Partial<FastListProps>,
   {
     batchSize,
@@ -70,12 +72,15 @@ export function getFastListState(
     blockEnd,
 
     ...computer.compute(
-      blockStart - batchSize,
-
-      blockEnd + batchSize,
+      // We know which direction the user is scrolling in so that
+      // We can render more items there instead and save memory/cpu.
+      blockStart,
+      blockEnd,
       prevItems || [],
       scrollDirection,
-      batchSize
+      batchSize,
+      renderAheadMultiplier,
+      renderBehindMultiplier
     ),
   };
 }

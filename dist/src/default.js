@@ -75,15 +75,16 @@ class FastList extends react_1.default.PureComponent {
                 (contentInset.bottom || 0);
         this.scrollTop = Math.min(Math.max(0, nativeEvent.contentOffset.y), nativeEvent.contentSize.height - this.containerHeight);
         if (this.scrollTop < this.prevScrollValue)
-            this.scrollDirection = 0;
+            this.scrollDirection = constants_1.ScrollDirection.UP;
         else
-            this.scrollDirection = 1;
+            this.scrollDirection = constants_1.ScrollDirection.DOWN;
         this.prevScrollValue = this.scrollTop;
         const nextState = (0, utils_1.computeBlock)(this.containerHeight, this.scrollTop, this.props.batchSize(this.containerHeight, event.nativeEvent.velocity));
+        nextState.scrollDirection = this.scrollDirection;
         if (nextState.batchSize !== this.state.batchSize ||
             nextState.blockStart !== this.state.blockStart ||
-            nextState.blockEnd !== this.state.blockEnd) {
-            nextState.scrollDirection = this.scrollDirection;
+            nextState.blockEnd !== this.state.blockEnd ||
+            nextState.scrollDirection !== this.state.scrollDirection) {
             this.setState(nextState);
         }
         const { onScroll } = this.props;
