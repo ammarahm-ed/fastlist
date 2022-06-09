@@ -9,6 +9,10 @@ export default class FastList extends React.PureComponent<FastListProps, FastLis
         renderFooter: () => any;
         renderSection: () => any;
         renderSectionFooter: () => any;
+        FastListItemRenderer: ({ layoutHeight: height, children, }: {
+            layoutHeight: number;
+            children?: React.ReactNode;
+        }) => JSX.Element;
         headerHeight: number;
         footerHeight: number;
         sectionHeight: number;

@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.FastListComputer = void 0;
-const constants_1 = require("./constants");
-const recycler_1 = require("./recycler");
-class FastListComputer {
+import { FastListItemTypes } from "./constants";
+import { FastListItemRecycler } from "./recycler";
+export class FastListComputer {
     headerHeight;
     footerHeight;
     sectionHeight;
@@ -63,7 +60,7 @@ class FastListComputer {
             top = top - batchSize * renderBehindMultiplier;
             bottom = bottom + batchSize * renderAheadMultiplier;
         }
-        const recycler = new recycler_1.FastListItemRecycler(prevItems);
+        const recycler = new FastListItemRecycler(prevItems);
         function isVisible(itemHeight) {
             const prevHeight = height;
             height += itemHeight;
@@ -94,8 +91,8 @@ class FastListComputer {
             let firstItemIndex = 0;
             for (firstItemIndex; firstItemIndex < items.length; firstItemIndex++) {
                 const item = items[firstItemIndex];
-                if (item.type !== constants_1.FastListItemTypes.SECTION &&
-                    item.type !== constants_1.FastListItemTypes.SPACER) {
+                if (item.type !== FastListItemTypes.SECTION &&
+                    item.type !== FastListItemTypes.SPACER) {
                     break;
                 }
             }
@@ -104,18 +101,18 @@ class FastListComputer {
                 if (firstSectionIndex) {
                     firstSpacerHeight += item.layoutHeight;
                 }
-                else if (item.type === constants_1.FastListItemTypes.SECTION) {
+                else if (item.type === FastListItemTypes.SECTION) {
                     firstSectionIndex = index;
                 }
             }
             if (firstSectionIndex) {
-                const spacer = recycler.get(constants_1.FastListItemTypes.SPACER, 0, firstSpacerHeight, 0);
+                const spacer = recycler.get(FastListItemTypes.SPACER, 0, firstSpacerHeight, 0);
                 items = [spacer, ...items.slice(firstSectionIndex)];
             }
         }
         function push(item) {
             if (spacerHeight > 0) {
-                items.push(recycler.get(constants_1.FastListItemTypes.SPACER, item.layoutY - spacerHeight, spacerHeight, item.section, item.row));
+                items.push(recycler.get(FastListItemTypes.SPACER, item.layoutY - spacerHeight, spacerHeight, item.section, item.row));
                 spacerHeight = 0;
             }
             items.push(item);
@@ -125,7 +122,7 @@ class FastListComputer {
         if (headerHeight > 0) {
             layoutY = height;
             if (isVisible(headerHeight)) {
-                push(recycler.get(constants_1.FastListItemTypes.HEADER, layoutY, headerHeight));
+                push(recycler.get(FastListItemTypes.HEADER, layoutY, headerHeight));
             }
         }
         for (let section = 0; section < sections.length; section++) {
@@ -136,14 +133,14 @@ class FastListComputer {
             layoutY = height;
             const sectionHeight = this.getHeightForSection(section);
             if (isAbove(sectionHeight)) {
-                push(recycler.get(constants_1.FastListItemTypes.SECTION, layoutY, sectionHeight, section));
+                push(recycler.get(FastListItemTypes.SECTION, layoutY, sectionHeight, section));
             }
             if (this.uniform) {
                 const rowHeight = this.getHeightForRow(section);
                 for (let row = 0; row < rows; row++) {
                     layoutY = height;
                     if (isVisible(rowHeight)) {
-                        push(recycler.get(constants_1.FastListItemTypes.ROW, layoutY, rowHeight, section, row));
+                        push(recycler.get(FastListItemTypes.ROW, layoutY, rowHeight, section, row));
                     }
                 }
             }
@@ -152,7 +149,7 @@ class FastListComputer {
                     const rowHeight = this.getHeightForRow(section, row);
                     layoutY = height;
                     if (isVisible(rowHeight)) {
-                        push(recycler.get(constants_1.FastListItemTypes.ROW, layoutY, rowHeight, section, row));
+                        push(recycler.get(FastListItemTypes.ROW, layoutY, rowHeight, section, row));
                     }
                 }
             }
@@ -160,7 +157,7 @@ class FastListComputer {
             if (sectionFooterHeight > 0) {
                 layoutY = height;
                 if (isVisible(sectionFooterHeight)) {
-                    push(recycler.get(constants_1.FastListItemTypes.SECTION_FOOTER, layoutY, sectionFooterHeight, section));
+                    push(recycler.get(FastListItemTypes.SECTION_FOOTER, layoutY, sectionFooterHeight, section));
                 }
             }
         }
@@ -168,13 +165,13 @@ class FastListComputer {
         if (footerHeight > 0) {
             layoutY = height;
             if (isVisible(footerHeight)) {
-                push(recycler.get(constants_1.FastListItemTypes.FOOTER, layoutY, footerHeight));
+                push(recycler.get(FastListItemTypes.FOOTER, layoutY, footerHeight));
             }
         }
         height += this.insetBottom;
         spacerHeight += this.insetBottom;
         if (spacerHeight > 0) {
-            items.push(recycler.get(constants_1.FastListItemTypes.SPACER, height - spacerHeight, spacerHeight, sections.length));
+            items.push(recycler.get(FastListItemTypes.SPACER, height - spacerHeight, spacerHeight, sections.length));
         }
         mergeSections();
         recycler.fill();
@@ -228,4 +225,3 @@ class FastListComputer {
         };
     }
 }
-exports.FastListComputer = FastListComputer;

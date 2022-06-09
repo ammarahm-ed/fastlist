@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFastListState = exports.computeBlock = void 0;
-const computer_1 = require("./computer");
-function computeBlock(containerHeight, scrollTop, batchSize) {
+import { FastListComputer } from "./computer";
+export function computeBlock(containerHeight, scrollTop, batchSize) {
     if (containerHeight === 0) {
         return {
             batchSize: 0,
@@ -16,8 +13,7 @@ function computeBlock(containerHeight, scrollTop, batchSize) {
     const blockEnd = blockStart + batchSize;
     return { batchSize, blockStart, blockEnd, scrollDirection: 1 };
 }
-exports.computeBlock = computeBlock;
-function getFastListState({ headerHeight, footerHeight, sectionHeight, rowHeight, sectionFooterHeight, sections, insetTop, insetBottom, renderAheadMultiplier = 2, renderBehindMultiplier = 1, }, { batchSize, blockStart, blockEnd, scrollDirection, items: prevItems, }) {
+export function getFastListState({ headerHeight, footerHeight, sectionHeight, rowHeight, sectionFooterHeight, sections, insetTop, insetBottom, renderAheadMultiplier = 2, renderBehindMultiplier = 1, }, { batchSize, blockStart, blockEnd, scrollDirection, items: prevItems, }) {
     if (batchSize === 0) {
         return {
             batchSize,
@@ -28,7 +24,7 @@ function getFastListState({ headerHeight, footerHeight, sectionHeight, rowHeight
             scrollDirection: 1,
         };
     }
-    const computer = new computer_1.FastListComputer({
+    const computer = new FastListComputer({
         headerHeight,
         footerHeight,
         sectionHeight,
@@ -48,4 +44,3 @@ function getFastListState({ headerHeight, footerHeight, sectionHeight, rowHeight
         blockStart, blockEnd, prevItems || [], scrollDirection, batchSize, renderAheadMultiplier, renderBehindMultiplier),
     };
 }
-exports.getFastListState = getFastListState;

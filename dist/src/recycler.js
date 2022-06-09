@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.FastListItemRecycler = void 0;
-const lodash_1 = require("lodash");
-const constants_1 = require("./constants");
+import { forEach } from "lodash";
+import { FastListItemTypes } from "./constants";
 /**
  * FastListItemRecycler is used to recycle FastListItem objects between recomputations
  * of the list. By doing this we ensure that components maintain their keys and avoid
  * reallocations.
  */
-class FastListItemRecycler {
+export class FastListItemRecycler {
     static _LAST_KEY = 0;
     _items = {};
     _pendingItems = {};
@@ -44,14 +41,14 @@ class FastListItemRecycler {
         return item;
     }
     fill() {
-        (0, lodash_1.forEach)(constants_1.FastListItemTypes, (type) => {
+        forEach(FastListItemTypes, (type) => {
             const [items, pendingItems] = this._itemsForType(type);
             this._fill(items, pendingItems);
         });
     }
     _fill(items, pendingItems) {
         let index = 0;
-        (0, lodash_1.forEach)(items, ({ key }) => {
+        forEach(items, ({ key }) => {
             const item = pendingItems[index];
             if (item == null) {
                 return false;
@@ -65,4 +62,3 @@ class FastListItemRecycler {
         pendingItems.length = 0;
     }
 }
-exports.FastListItemRecycler = FastListItemRecycler;

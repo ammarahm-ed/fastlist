@@ -1,12 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.FastListSectionRenderer = void 0;
-const react_1 = __importDefault(require("react"));
-const react_native_1 = require("react-native");
-const FastListSectionRenderer = ({ layoutY, layoutHeight, nextSectionLayoutY, scrollTopValue, children, }) => {
+import React from "react";
+import { Animated } from "react-native";
+export const FastListSectionRenderer = ({ layoutY, layoutHeight, nextSectionLayoutY, scrollTopValue, children, }) => {
     const inputRange = [-1, 0];
     const outputRange = [0, 0];
     inputRange.push(layoutY);
@@ -24,8 +18,8 @@ const FastListSectionRenderer = ({ layoutY, layoutHeight, nextSectionLayoutY, sc
         inputRange,
         outputRange,
     });
-    const child = react_1.default.Children.only(children);
-    return (<react_native_1.Animated.View style={[
+    const child = React.Children.only(children);
+    return (<Animated.View style={[
             child.props.style,
             {
                 zIndex: 10,
@@ -35,9 +29,8 @@ const FastListSectionRenderer = ({ layoutY, layoutHeight, nextSectionLayoutY, sc
         ]}>
       {/*
          */}
-      {react_1.default.cloneElement(child, {
+      {React.cloneElement(child, {
             style: { flex: 1 },
         })}
-    </react_native_1.Animated.View>);
+    </Animated.View>);
 };
-exports.FastListSectionRenderer = FastListSectionRenderer;

@@ -1,23 +1,19 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(require("react"));
-const react_native_1 = require("react-native");
-const react_native_gesture_handler_1 = require("react-native-gesture-handler");
-const computer_1 = require("./computer");
-const constants_1 = require("./constants");
-const item_1 = require("./item");
-const section_1 = require("./section");
-const utils_1 = require("./utils");
-class FastList extends react_1.default.PureComponent {
+import React from "react";
+import { Animated, } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { FastListComputer } from "./computer";
+import { FastListItemTypes, ScrollDirection } from "./constants";
+import { FastListItemRenderer } from "./item";
+import { FastListSectionRenderer } from "./section";
+import { computeBlock, getFastListState } from "./utils";
+export default class FastList extends React.PureComponent {
     static defaultProps = {
         isFastList: true,
         renderHeader: () => null,
         renderFooter: () => null,
         renderSection: () => null,
         renderSectionFooter: () => null,
+        FastListItemRenderer: FastListItemRenderer,
         headerHeight: 0,
         footerHeight: 0,
         sectionHeight: 0,
@@ -29,13 +25,13 @@ class FastList extends react_1.default.PureComponent {
     scrollDirection = 1;
     containerHeight = 0;
     scrollTop = 0;
-    scrollTopValue = this.props.scrollTopValue || new react_native_1.Animated.Value(0);
+    scrollTopValue = this.props.scrollTopValue || new Animated.Value(0);
     scrollTopValueAttachment;
-    scrollView = react_1.default.createRef();
-    state = (0, utils_1.getFastListState)(this.props, (0, utils_1.computeBlock)(this.containerHeight, this.scrollTop, this.props.batchSize(this.containerHeight)));
+    scrollView = React.createRef();
+    state = getFastListState(this.props, computeBlock(this.containerHeight, this.scrollTop, this.props.batchSize(this.containerHeight)));
     prevScrollValue = 0;
     static getDerivedStateFromProps(props, state) {
-        return (0, utils_1.getFastListState)(props, state);
+        return getFastListState(props, state);
     }
     getItems() {
         return this.state.items;
@@ -48,7 +44,7 @@ class FastList extends react_1.default.PureComponent {
         const scrollView = this.scrollView.current;
         if (scrollView != null) {
             const { headerHeight, footerHeight, sectionHeight, rowHeight, sectionFooterHeight, sections, insetTop, insetBottom, } = this.props;
-            const computer = new computer_1.FastListComputer({
+            const computer = new FastListComputer({
                 headerHeight,
                 footerHeight,
                 sectionHeight,
@@ -75,11 +71,11 @@ class FastList extends react_1.default.PureComponent {
                 (contentInset.bottom || 0);
         this.scrollTop = Math.min(Math.max(0, nativeEvent.contentOffset.y), nativeEvent.contentSize.height - this.containerHeight);
         if (this.scrollTop < this.prevScrollValue)
-            this.scrollDirection = constants_1.ScrollDirection.UP;
+            this.scrollDirection = ScrollDirection.UP;
         else
-            this.scrollDirection = constants_1.ScrollDirection.DOWN;
+            this.scrollDirection = ScrollDirection.DOWN;
         this.prevScrollValue = this.scrollTop;
-        const nextState = (0, utils_1.computeBlock)(this.containerHeight, this.scrollTop, this.props.batchSize(this.containerHeight, event.nativeEvent.velocity));
+        const nextState = computeBlock(this.containerHeight, this.scrollTop, this.props.batchSize(this.containerHeight, event.nativeEvent.velocity));
         nextState.scrollDirection = this.scrollDirection;
         if (nextState.batchSize !== this.state.batchSize ||
             nextState.blockStart !== this.state.blockStart ||
@@ -99,7 +95,7 @@ class FastList extends react_1.default.PureComponent {
             nativeEvent.layout.height -
                 (contentInset.top || 0) -
                 (contentInset.bottom || 0);
-        const nextState = (0, utils_1.computeBlock)(this.containerHeight, this.scrollTop, this.props.batchSize(this.containerHeight));
+        const nextState = computeBlock(this.containerHeight, this.scrollTop, this.props.batchSize(this.containerHeight));
         if (nextState.batchSize !== this.state.batchSize ||
             nextState.blockStart !== this.state.blockStart ||
             nextState.blockEnd !== this.state.blockEnd) {
@@ -130,60 +126,60 @@ class FastList extends react_1.default.PureComponent {
         }
         const sectionLayoutYs = [];
         items.forEach(({ type, layoutY }) => {
-            if (type === constants_1.FastListItemTypes.SECTION) {
+            if (type === FastListItemTypes.SECTION) {
                 sectionLayoutYs.push(layoutY);
             }
         });
         const children = [];
         items.forEach(({ type, key, layoutY, layoutHeight, section, row }) => {
             switch (type) {
-                case constants_1.FastListItemTypes.SPACER: {
-                    children.push(<item_1.FastListItemRenderer key={key} layoutHeight={layoutHeight}/>);
+                case FastListItemTypes.SPACER: {
+                    children.push(<FastListItemRenderer key={key} layoutHeight={layoutHeight}/>);
                     break;
                 }
-                case constants_1.FastListItemTypes.HEADER: {
+                case FastListItemTypes.HEADER: {
                     const child = renderHeader();
                     if (child != null) {
-                        children.push(<item_1.FastListItemRenderer key={key} layoutHeight={layoutHeight}>
+                        children.push(<FastListItemRenderer key={key} layoutHeight={layoutHeight}>
                 {child}
-              </item_1.FastListItemRenderer>);
+              </FastListItemRenderer>);
                     }
                     break;
                 }
-                case constants_1.FastListItemTypes.FOOTER: {
+                case FastListItemTypes.FOOTER: {
                     const child = renderFooter();
                     if (child != null) {
-                        children.push(<item_1.FastListItemRenderer key={key} layoutHeight={layoutHeight}>
+                        children.push(<FastListItemRenderer key={key} layoutHeight={layoutHeight}>
                 {child}
-              </item_1.FastListItemRenderer>);
+              </FastListItemRenderer>);
                     }
                     break;
                 }
-                case constants_1.FastListItemTypes.SECTION: {
+                case FastListItemTypes.SECTION: {
                     sectionLayoutYs.shift();
                     const child = renderSection(section);
                     if (child != null) {
-                        children.push(<section_1.FastListSectionRenderer key={key} layoutY={layoutY} layoutHeight={layoutHeight} nextSectionLayoutY={sectionLayoutYs[0]} scrollTopValue={this.scrollTopValue}>
+                        children.push(<FastListSectionRenderer key={key} layoutY={layoutY} layoutHeight={layoutHeight} nextSectionLayoutY={sectionLayoutYs[0]} scrollTopValue={this.scrollTopValue}>
                 {child}
-              </section_1.FastListSectionRenderer>);
+              </FastListSectionRenderer>);
                     }
                     break;
                 }
-                case constants_1.FastListItemTypes.ROW: {
+                case FastListItemTypes.ROW: {
                     const child = renderRow(section, row);
                     if (child != null) {
-                        children.push(<item_1.FastListItemRenderer key={key} layoutHeight={layoutHeight}>
+                        children.push(<FastListItemRenderer key={key} layoutHeight={layoutHeight}>
                 {child}
-              </item_1.FastListItemRenderer>);
+              </FastListItemRenderer>);
                     }
                     break;
                 }
-                case constants_1.FastListItemTypes.SECTION_FOOTER: {
+                case FastListItemTypes.SECTION_FOOTER: {
                     const child = renderSectionFooter(section);
                     if (child != null) {
-                        children.push(<item_1.FastListItemRenderer key={key} layoutHeight={layoutHeight}>
+                        children.push(<FastListItemRenderer key={key} layoutHeight={layoutHeight}>
                 {child}
-              </item_1.FastListItemRenderer>);
+              </FastListItemRenderer>);
                     }
                     break;
                 }
@@ -194,7 +190,7 @@ class FastList extends react_1.default.PureComponent {
     componentDidMount() {
         if (this.scrollView.current != null) {
             //@ts-ignore
-            this.scrollTopValueAttachment = react_native_1.Animated.attachNativeEvent(this.scrollView.current, "onScroll", [{ nativeEvent: { contentOffset: { y: this.scrollTopValue } } }]);
+            this.scrollTopValueAttachment = Animated.attachNativeEvent(this.scrollView.current, "onScroll", [{ nativeEvent: { contentOffset: { y: this.scrollTopValue } } }]);
         }
     }
     componentDidUpdate(prevProps) {
@@ -225,11 +221,11 @@ class FastList extends react_1.default.PureComponent {
     // well! in order to support continuous scrolling of a scrollview/list/whatever in an action sheet, we need
     // to wrap the scrollview in a NativeViewGestureHandler. This wrapper does that thing that need do
     wrapper = this.props.renderActionSheetScrollViewWrapper || ((val) => val);
-    scrollViewComponent = () => this.wrapper(<react_native_gesture_handler_1.ScrollView {...this.props} ref={this.getRef} removeClippedSubviews={false} scrollEventThrottle={16} onScroll={this.handleScroll} onLayout={this.handleLayout} onMomentumScrollEnd={this.handleScrollEnd} onScrollEndDrag={this.handleScrollEnd}>
+    scrollViewComponent = () => this.wrapper(<ScrollView {...this.props} ref={this.getRef} removeClippedSubviews={false} scrollEventThrottle={16} onScroll={this.handleScroll} onLayout={this.handleLayout} onMomentumScrollEnd={this.handleScrollEnd} onScrollEndDrag={this.handleScrollEnd}>
         {
         //@ts-ignore
         this.renderItems()}
-      </react_native_gesture_handler_1.ScrollView>);
+      </ScrollView>);
     render() {
         const scroller = this.scrollViewComponent();
         return (<>
@@ -240,4 +236,3 @@ class FastList extends react_1.default.PureComponent {
       </>);
     }
 }
-exports.default = FastList;

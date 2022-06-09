@@ -1,6 +1,8 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import FastList from "./test/default";
+import HorizontalFastList from "./test/horizontal";
 
 type Row = {
   id: string;
@@ -87,7 +89,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView style={[styles.container]}>
-        <HorizontalFastList
+        {/* <HorizontalFastList
           style={styles.list}
           batchSize={(height, velocity) => {
             return height;
@@ -101,13 +103,15 @@ export default function App() {
           contentContainerStyle={{
             height: 100,
           }}
-        />
+        /> */}
 
         <FastList
           style={styles.list}
           batchSize={(height, velocity) => {
-            return height;
+            return height / 2;
           }}
+          renderAheadMultiplier={2}
+          renderBehindMultiplier={1}
           rowHeight={50}
           headerHeight={50}
           renderHeader={() => renderHeader("Fast List")}

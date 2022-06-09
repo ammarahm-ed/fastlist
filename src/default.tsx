@@ -23,6 +23,7 @@ export default class FastList extends React.PureComponent<
     renderFooter: () => null,
     renderSection: () => null,
     renderSectionFooter: () => null,
+    FastListItemRenderer: FastListItemRenderer,
     headerHeight: 0,
     footerHeight: 0,
     sectionHeight: 0,
